@@ -17,13 +17,17 @@ public class GettextTranslationFile implements TranslationFile
 	
 	
 	private BinaryReader reader;
+	private int majorVersion;
+	private int minorVersion;
 	private long size;
 	private long msgIdsOffset;
 	private long translationsOffset;
 	
-	private GettextTranslationFile(BinaryReader reader)
+	private GettextTranslationFile(BinaryReader reader, int major, int minor)
 	{
 		this.reader = reader;
+		this.majorVersion = major;
+		this.minorVersion = minor;
 		readHeader();
 	}
 	
@@ -57,18 +61,16 @@ public class GettextTranslationFile implements TranslationFile
 			// Read and check version
 			ok = false;
 			try {
-				long version = reader.readNextUnsignedInt();
-				if (version == 0)
-					ok = true;
+				int minorVersion = reader.readNextUnsignedShort();
+				int majorVersion = reader.readNextUnsignedShort();
+				if (majorVersion == 0)
+					return new GettextTranslationFile(reader, majorVersion, minorVersion);
 				else
-					System.out.println(String.format("ERROR Only version 0 is supported. Got: %d", version));
+					System.out.println(String.format("ERROR Only version 0.x is supported. Got: %d.%d", majorVersion, minorVersion));
 			} catch (IOException e) {
 				System.out.println("ERROR Could not read version");
 			}
 		}
-			
-		if (ok)
-			return new GettextTranslationFile(reader);
 		
 		try {
 			reader.getByteProvider().close();
@@ -107,7 +109,8 @@ public class GettextTranslationFile implements TranslationFile
 	
 	@Override
 	public String getInformation() {
-		return getString(getInfo(translationsOffset));
+		return String.format("Translation file version: %d.%d\n", majorVersion, minorVersion) 
+		     + getString(getInfo(translationsOffset));
 	}
 	
 	@Override

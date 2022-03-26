@@ -72,12 +72,12 @@ public class TranslateAction extends ListingContextAction
             File catalogFile = fileChooser.getSelectedFile(true);
             if (catalogFile != null) {
 	            catalog = GettextTranslationFile.create(catalogFile);
-	    		System.out.println("INFO Translation information: " + catalog.getInformation());
+	            if (catalog != null)
+	            	System.out.println("INFO Translation information:\n" + catalog.getInformation());
+	            else
+	            	return;
             }
 		}
-		
-		if (catalog == null)
-			return;
 		
 		String translation = catalog.getTranslation(message);
 		System.out.println(String.format("DEBUG Translation: %s -> %s", message, translation));
