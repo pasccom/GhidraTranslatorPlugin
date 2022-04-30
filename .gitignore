@@ -1,5 +1,8 @@
 # Generated files:
 bin/
+.gradle/
+build/
+dist/
 
 # Hidden files:
 .rsync-filter
