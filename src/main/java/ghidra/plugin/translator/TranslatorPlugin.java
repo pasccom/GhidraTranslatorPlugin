@@ -19,10 +19,10 @@ import ghidra.framework.plugintool.util.PluginStatus;
 		packageName = MiscellaneousPluginPackage.NAME,
 		category = PluginCategoryNames.ANALYSIS,
 		shortDescription = "Translate strings",
-		description = "Translate string using GNU gettext interface"
-		//servicesRequired = { ProgramManager.class, DataTypeManagerService.class },
-		//servicesProvided = { DataService.class },
-		//eventsConsumed = { ProgramActivatedPluginEvent.class }
+		description = "Automatically translate strings using GNU gettext interface"
+		//servicesRequired = {},
+		//servicesProvided = {},
+		//eventsConsumed = {}
 	)
 public class TranslatorPlugin extends Plugin
 {
