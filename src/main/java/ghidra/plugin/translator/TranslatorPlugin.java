@@ -17,7 +17,7 @@ import ghidra.framework.plugintool.util.PluginStatus;
 /**
  * This is the main class of GhidraTranslatorPlugin.
  * Currently, it just creates the "Translate" action.
- * 
+ *
  * @author pascom@orange.fr
  */
 @PluginInfo(
@@ -33,8 +33,8 @@ import ghidra.framework.plugintool.util.PluginStatus;
 public class TranslatorPlugin extends Plugin
 {
 	/**
-	 * This function creates a new instance of the plugin 
-	 * and initializes it by creating the plugin actions. 
+	 * This function creates a new instance of the plugin
+	 * and initializes it by creating the plugin actions.
 	 * @param tool The tool in which the plugin is loaded.
 	 */
 	public TranslatorPlugin(PluginTool tool)

@@ -2,14 +2,14 @@ package ghidra.plugin.translator;
 
 /**
  * Interface to be implemented by translation files.
- * 
+ *
  * @author pascom@orange.fr
  */
 public interface TranslationFile
 {
 	/**
 	 * This function retrieves information on the translation file.
-	 * 
+	 *
 	 * Indeed translation file usually store some additional information
 	 * such as translation author, translation version, ...
 	 * @return Translation file information.
