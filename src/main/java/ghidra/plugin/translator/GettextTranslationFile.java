@@ -7,22 +7,51 @@ import java.nio.file.AccessMode;
 import ghidra.app.util.bin.BinaryReader;
 import ghidra.app.util.bin.FileByteProvider;
 
+/**
+ * GetText based translation file.
+ * 
+ * This class implements the TranslationFile interface
+ * for the GetText format (*.mo files).
+ * 
+ * @author pascom@orange.fr
+ */
 public class GettextTranslationFile implements TranslationFile
 {
+	/**
+	 * Utility class to store string information.
+	 * @author Pascal COMBES
+	 */
 	private class StringInfo
 	{
+		/** The length of the string */
 		public int length;
+		/** The offset of the string */
 		public long offset;
 	}
 	
-	
+	/** The reader for the physical file */
 	private BinaryReader reader;
+	/** Major version of the translation file */
 	private int majorVersion;
+	/** Minor version of the translation file */
 	private int minorVersion;
+	/** The size of the translation file */
 	private long size;
+	/** Offset of messages in file */
 	private long msgIdsOffset;
+	/** Offset of translations in file */
 	private long translationsOffset;
 	
+	/**
+	 * This function initializes a new GetText translation file abstraction.
+	 * It uses the given version information and also reads the translation
+	 * file header. 
+	 * @param reader The reader for the physical file
+	 * @param major Major version of the translation file
+	 * @param minor Minor version of the translation file
+	 * @see create(String)
+	 * @see create(File)
+	 */
 	private GettextTranslationFile(BinaryReader reader, int major, int minor)
 	{
 		this.reader = reader;
@@ -31,11 +60,35 @@ public class GettextTranslationFile implements TranslationFile
 		readHeader();
 	}
 	
+	/**
+	 * This function creates a new GetText translation file
+	 * from the file at the given path.
+	 * 
+	 * It checks that the magic corresponds to the magic of
+	 * GetText translation files and that the version of the
+	 * translation file is supported.
+	 * @param filePath Path to the translation file.
+	 * @return A new GetText translation file abstraction or null
+	 * if the file at the given path is not supported.
+	 * @see create(File)
+	 */
 	public static GettextTranslationFile create(String filePath)
 	{
 		return create(new File(filePath));
 	}
 	
+	/**
+	 * This function creates a new GetText translation file
+	 * from the given file.
+	 * 
+	 * It checks that the magic corresponds to the magic of
+	 * GetText translation files and that the version of the
+	 * translation file is supported.
+	 * @param file The translation file.
+	 * @return A new GetText translation file abstraction or null
+	 * if the given file is not supported.
+	 * @see create(String)
+	 */
 	public static GettextTranslationFile create(File file)
 	{
 		BinaryReader reader;
@@ -74,7 +127,6 @@ public class GettextTranslationFile implements TranslationFile
 		
 		try {
 			reader.getByteProvider().close();
-			//inStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -82,6 +134,13 @@ public class GettextTranslationFile implements TranslationFile
 		return null;
 	}
 	
+	/**
+	 * This function reads the header of the GetText translation file.
+	 * 
+	 * The header contains the size of the translation file
+	 * (i.e. the number of strings in the translation file)
+	 * and the offsets to the messages and the translations.
+	 */
 	private void readHeader()
 	{
 		try {
@@ -107,12 +166,18 @@ public class GettextTranslationFile implements TranslationFile
 		}
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public String getInformation() {
 		return String.format("Translation file version: %d.%d\n", majorVersion, minorVersion) 
 		     + getString(getInfo(translationsOffset));
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	@Override
 	public String getTranslation(String msgId) {
 		long index = findMessage(msgId);
@@ -121,6 +186,15 @@ public class GettextTranslationFile implements TranslationFile
 		return getString(getInfo(translationsOffset + 8 * index));
 	}
 
+	/**
+	 * This function searches the given message in the translation file.
+	 * 
+	 * Since the messages are sorted in alphabetical order,
+	 * it uses a dichotomy.
+	 * @param msgId The message to search for
+	 * @return The offset of the given message 
+	 * or -1 if the message is not found.
+	 */
 	private long findMessage(String msgId)
 	{
 		long l = 0;
@@ -157,6 +231,11 @@ public class GettextTranslationFile implements TranslationFile
 		return m;
 	}
 	
+	/**
+	 * This function returns the StringInfo at the given offset.
+	 * @param offset The offset where the StringInfo is stored.
+	 * @return The StringInfo at the given offset.
+	 */
 	private StringInfo getInfo(long offset)
 	{
 		StringInfo info = new StringInfo();
@@ -173,6 +252,11 @@ public class GettextTranslationFile implements TranslationFile
 		return info;
 	}
 	
+	/**
+	 * This function returns the string for the given StringInfo.
+	 * @param info The information on the string to retrieve.
+	 * @return The string corresponding to the given StringInfo.
+	 */
 	private String getString(StringInfo info)
 	{
 		if (info == null)

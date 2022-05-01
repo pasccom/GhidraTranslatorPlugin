@@ -14,24 +14,38 @@ import ghidra.framework.plugintool.PluginTool;
 import ghidra.framework.plugintool.PluginInfo;
 import ghidra.framework.plugintool.util.PluginStatus;
 
+/**
+ * This is the main class of GhidraTranslatorPlugin.
+ * Currently, it just creates the "Translate" action.
+ * 
+ * @author pascom@orange.fr
+ */
 @PluginInfo(
-		status = PluginStatus.UNSTABLE,
-		packageName = MiscellaneousPluginPackage.NAME,
-		category = PluginCategoryNames.ANALYSIS,
-		shortDescription = "Translate strings",
-		description = "Automatically translate strings using GNU gettext interface"
-		//servicesRequired = {},
-		//servicesProvided = {},
-		//eventsConsumed = {}
-	)
+	status = PluginStatus.UNSTABLE,
+	packageName = MiscellaneousPluginPackage.NAME,
+	category = PluginCategoryNames.ANALYSIS,
+	shortDescription = "Translate strings",
+	description = "Automatically translate strings using GNU gettext interface"
+	//servicesRequired = {},
+	//servicesProvided = {},
+	//eventsConsumed = {}
+)
 public class TranslatorPlugin extends Plugin
 {
+	/**
+	 * This function creates a new instance of the plugin 
+	 * and initializes it by creating the plugin actions. 
+	 * @param tool The tool in which the plugin is loaded.
+	 */
 	public TranslatorPlugin(PluginTool tool)
 	{
 		super(tool);
 		createActions();
 	}
 
+	/**
+	 * This function creates the "Translate" action.
+	 */
 	private void createActions()
 	{
 		TranslateAction action = new TranslateAction(this);

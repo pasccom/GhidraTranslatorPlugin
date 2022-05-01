@@ -14,11 +14,34 @@ import ghidra.program.model.listing.Data;
 import ghidra.program.model.listing.Program;
 import ghidra.program.model.symbol.Equate;
 
+/** 
+ * This class implements the "Translate" action,
+ * which is the main action of the TranslatorPlugin.
+ *
+ * This action is context sensitive and it is visible
+ * only for strings
+ * 
+ * When performed, it looks for the translation of the string
+ * in the catalog. If there is no catalog open,
+ * a dialog is shown so that the user can select
+ * a translation file. If a translation is found,
+ * a new end-of-line comment is created. Otherwise,
+ * nothing happens.
+ * 
+ * @author pascom@orange.fr
+ */
 public class TranslateAction extends ListingContextAction
 {
+	/** The parent Plugin */
 	private Plugin plugin;
+	/** The translation catalog */
 	private TranslationFile catalog;
 	
+	/**
+	 * This function creates and initializes a new instance
+	 * of the "Translate" action.
+	 * @param plugin The parent Plugin
+	 */
 	public TranslateAction(Plugin plugin)
 	{
 		super("Translate", plugin.getName());
@@ -27,6 +50,13 @@ public class TranslateAction extends ListingContextAction
 		this.catalog = null;
 	}
 	
+	/**
+	 * This function is called to check that the action is valid
+	 * in the given context. That is to say, there is a string
+	 * (which may be an equate) at the given address 
+	 * in the given program.
+	 * @param context The context of the action
+	 */
 	@Override
 	protected boolean isValidContext(ListingActionContext context)
 	{
@@ -40,6 +70,11 @@ public class TranslateAction extends ListingContextAction
 		return !program.getEquateTable().getEquates(address).isEmpty();
 	}
 
+	/**
+	 * This function is called when the action should be performed.
+	 * in the given context. It translate the string at the given address.
+	 * @param context The context of the action
+	 */
 	@Override
 	public void actionPerformed(ListingActionContext context)
 	{
@@ -60,6 +95,16 @@ public class TranslateAction extends ListingContextAction
 		program.endTransaction(transactionId, true);
 	}
 	
+	/**
+	 * This function translates the given message.
+	 * It looks for the message in the catalog,
+	 * and adds an end-of-line comment with the string translation
+	 * in the given program at the given address, 
+	 * if the lookup is successful.
+	 * @param program The program where to add the comment
+	 * @param address The address where to add the comment
+	 * @param message The message to translate
+	 */
 	private void translate(Program program, Address address, String message)
 	{
 		if (catalog == null) {
