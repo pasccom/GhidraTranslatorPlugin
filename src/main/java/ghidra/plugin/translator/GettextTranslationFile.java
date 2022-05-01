@@ -23,6 +23,8 @@ import java.nio.file.AccessMode;
 
 import ghidra.app.util.bin.BinaryReader;
 import ghidra.app.util.bin.FileByteProvider;
+import ghidra.util.filechooser.GhidraFileChooserModel;
+import ghidra.util.filechooser.GhidraFileFilter;
 
 /**
  * GetText based translation file.
@@ -76,6 +78,44 @@ public class GettextTranslationFile implements TranslationFile
 		this.minorVersion = minor;
 		readHeader();
 	}
+
+	/**
+	 * This function returns a file filter for this class.
+	 *
+	 * The returned file filter only accepts directories
+	 * and files with *.mo extension.
+	 * @return A file filter for this class.
+	 */
+	public static GhidraFileFilter getFileFilter()
+	{
+		/**
+		 * This class implements a specialized file filter
+		 * for the Gettext translation file.
+		 *
+		 * It only accepts directories and files with *.mo extension.
+		 */
+		final class GettextFileFilter implements GhidraFileFilter
+		{
+			/**
+			 * @inheritDoc
+			 */
+			@Override
+			public boolean accept(File path, GhidraFileChooserModel model) {
+				return path.isDirectory() || path.getName().endsWith(".mo");
+			}
+
+			/**
+			 * @inheritDoc
+			 */
+			@Override
+			public String getDescription() {
+				return "Gettext translation files (*.mo)";
+			}
+		}
+
+		return new GettextFileFilter();
+	}
+
 
 	/**
 	 * This function creates a new GetText translation file

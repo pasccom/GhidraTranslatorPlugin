@@ -131,6 +131,7 @@ public class TranslateAction extends ListingContextAction
 			fileChooser.setMultiSelectionEnabled(false);
             fileChooser.setTitle("Choose translation file");
             fileChooser.setApproveButtonToolTipText("Choose selected file");
+            fileChooser.addFileFilter(GettextTranslationFile.getFileFilter());
 
             File catalogFile = fileChooser.getSelectedFile(true);
             if (catalogFile != null) {
