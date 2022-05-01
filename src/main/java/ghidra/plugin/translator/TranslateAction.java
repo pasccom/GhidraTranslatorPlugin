@@ -98,17 +98,19 @@ public class TranslateAction extends ListingContextAction
 		final Address address = context.getAddress();
 
 		int transactionId = program.startTransaction("Translation");
+		try {
+			Data data = program.getListing().getDataAt(address);
+			if ((data != null) && (data.getValue() instanceof String))
+				translate(program, address, (String) data.getValue());
 
-		Data data = program.getListing().getDataAt(address);
-		if ((data != null) && (data.getValue() instanceof String))
-			translate(program, address, (String) data.getValue());
 
+			for (Equate e : program.getEquateTable().getEquates(address)) {
+				translate(program, address, e.getName());
 
-		for (Equate e : program.getEquateTable().getEquates(address)) {
-			translate(program, address, e.getName());
-
+			}
+		} finally {
+			program.endTransaction(transactionId, true);
 		}
-		program.endTransaction(transactionId, true);
 	}
 
 	/**
