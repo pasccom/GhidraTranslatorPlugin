@@ -8,11 +8,11 @@ dist/
 .rsync-filter
 *.del
 /bin/bash: q : commande introuvable
-
         
 # Settings:
 .settings/        
 .antProperties.xml
+javadoc.xml
 .classpath
 .project
 .pydevproject
